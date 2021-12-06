@@ -1,2 +1,3 @@
-# template
-Repositório template
+# JAI SDK for NodeJS
+
+JAI SDK project
