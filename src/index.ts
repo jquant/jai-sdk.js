@@ -1,1 +1,2 @@
-export default 'This module must not be required!';
+import { Jai } from './core/Jai'
+export default Jai
