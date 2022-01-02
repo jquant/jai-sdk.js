@@ -1,11 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { JAIAuth, JAIConfig } from '../interfaces';
-//@ts-ignore
+// @ts-ignore
 import { DataFrame } from 'dataframe-js';
+import { chunk, sleep } from '@techmmunity/utils';
+import { JAIAuth, JAIConfig } from '../interfaces';
+import { BaseService } from './Base';
+import { progressBar } from '../functions/progressBar';
 
-export class Jai {
-  private authCredentials: JAIConfig;
-
+export class Jai extends BaseService {
   /**
    * Class Contructor could be both a JAI Auth or JAI Token
    *
@@ -15,38 +15,15 @@ export class Jai {
    *
    */
   constructor(authCredentials: JAIConfig) {
-    this.authCredentials = authCredentials;
+    super(authCredentials);
   }
 
   async getAuthKey(data: JAIAuth): Promise<any> {
-    const { email, firstName, lastName, company } = data;
-    return await this._request()
-      .put('/auth', {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        company: company,
-      })
-      .then((res: any) => {
-        return res;
-      })
-      .catch((err: any) => {
-        throw err;
-      });
+    return await this._getAuthKey(data);
   }
 
   async names(): Promise<any> {
-    const config: AxiosRequestConfig = {
-      params: {
-        get_size: true,
-      },
-    };
-    const { data } = await this._request()
-      .get('/names', config)
-      .catch((err) => {
-        throw err;
-      });
-    return data;
+    return await this._names();
   }
 
   async info(): Promise<any> {
@@ -77,49 +54,35 @@ export class Jai {
     return 'Not implemented yet';
   }
 
-  async similar(
-    name: string,
-    dt: Array<any>,
-    topK?: number,
-    filters?: null | string,
-    batchSize?: number,
-  ): Promise<any> {
-    topK = topK || 5;
-    filters = filters || null;
-    batchSize = batchSize || 16384;
-    let results: any[] = [];
-    const config: AxiosRequestConfig = {
-      params: {
-        top_k: topK,
-      },
-    };
-    config.params.filters = filters && filters;
-    const df = new DataFrame();
-    for (let i = 0; i < df.length; i += batchSize) {
-      const _batch = df.slice(i, i + batchSize);
-      const _batch2Json = _batch.toJSON();
-      const { data } = await this._request()
-        .put(`/similar/id/${name}`, _batch2Json, config)
-        .catch((err: any) => {
-          throw err;
-        });
-      results = results.concat(data['similarity']);
-    }
+  async similar(name: string, dt: Array<any>, topK?: number, filters?: string, batchSize?: number): Promise<any> {
+    const _batchSize = batchSize || 1;
+    const _topK = topK || 5;
+    const _filters = filters || '';
+    const result: Array<any> = [];
+    const chunks = chunk(dt, _batchSize);
+    const total = chunks.length;
+    const bar = progressBar(total, 'Similar');
 
-    return results;
+    for(const chunk of chunks) {
+      const res = await this._similar(name, chunk, _topK, _filters);  
+      bar.next();  
+      result.push(...res['similarity']);
+    }    
+    bar.next();
+    return result;
   }
 
-  async predict(name: string, dt: Array<any>, predictProba?: boolean): Promise<any> {
-    predictProba = predictProba || false;
-    const config: AxiosRequestConfig = {
-      params: {
-        predict_proba: predictProba,
-      },
-    };
+  // async predict(name: string, dt: Array<any>, predictProba?: boolean): Promise<any> {
+  //   predictProba = predictProba || false;
+  //   const config: AxiosRequestConfig = {
+  //     params: {
+  //       predict_proba: predictProba,
+  //     },
+  //   };
 
-    const { data } = await this._request().put(`/predict/${name}`, dt, config);
-    return data;
-  }
+  //   const { data } = await this._request().put(`/predict/${name}`, dt, config);
+  //   return data;
+  // }
 
   async setup(): Promise<any> {
     return 'Not implemented yet';
@@ -142,25 +105,12 @@ export class Jai {
    *
    * @returns {Promise<Object>}
    */
-  async status(): Promise<any> {
-    try {
-      const { data } = await this._request().get('/status');
-      return data;
-    } catch (err: any) {
-      console.log(err);
-    }
-  }
-
-  private _request(): AxiosInstance {
-    const { access_token } = this.authCredentials;
-    const axiosConfig: AxiosRequestConfig = {
-      baseURL: 'https://mycelia.azure-api.net',
-      headers: {
-        'Content-Type': 'application/json',
-        Auth: access_token || '',
-      },
-    };
-
-    return axios.create(axiosConfig);
-  }
+  // async status(): Promise<any> {
+  //   try {
+  //     const { data } = await this._request().get('/status');
+  //     return data;
+  //   } catch (err: any) {
+  //     console.log(err);
+  //   }
+  // }
 }
