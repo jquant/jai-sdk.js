@@ -1,11 +1,14 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { JAIAuth, JAIConfig, JAIMode } from '../interfaces';
+import { JAIAuth, JAIConfig } from '../estructures/interfaces';
+import { JAIModeEnum } from '../estructures/enums';
 
 export class BaseService {
   private authCredentials: JAIConfig;
+  private uploadSpeed: number;
 
   constructor(authCredentials: JAIConfig) {
     this.authCredentials = authCredentials;
+    this.uploadSpeed = 0;
   }
 
   protected async _getAuthKey(data: JAIAuth): Promise<any> {
@@ -22,11 +25,11 @@ export class BaseService {
       });
   }
 
-  protected async _info(mode?: string, get_size?: boolean): Promise<any> {
+  protected async _info(mode = JAIModeEnum.COMPLETE, get_size = false): Promise<any> {
     const config: AxiosRequestConfig = {
       params: {
-        mode: mode || 'complete',
-        get_size: get_size || false,
+        mode: mode,
+        get_size: get_size
       },
     };
     const { data } = await this._request().get('/info', config);
@@ -36,15 +39,11 @@ export class BaseService {
 
   protected async _status(): Promise<any> {
     const { data } = await this._request().get('/status');
-    return data
+    return data;
   }
 
   protected async _delete_status(name: string): Promise<any> {
     const { data } = await this._request().delete(`/status?db_name=${name}`);
-    return data;
-  }
-  protected async _download_vectos(name: string): Promise<any> {
-    const { data } = await this._request().get(`/key/${name}`);
     return data;
   }
 
@@ -69,43 +68,34 @@ export class BaseService {
         top_k: topK,
       },
     };
-
     if (filter) config.params.filter = filter;
     const { data } = await this._request().put(`/similar/id/${name}`, dt, config);
-
     return data;
   }
 
-  protected async _similar_json(name: string, dt: Record<string, any>, topK: number, filter?: string): Promise<any> {
+  protected async _similarJSON(name: string, dt: string, topK: number, filter?: string): Promise<any> {
     const config: AxiosRequestConfig = {
       params: {
         top_k: topK,
       },
     };
-
     if (filter) config.params.filter = filter;
-
-    const { data } = await this._request().put(`/similar/id/${name}`, dt, config);
-
+    const { data } = await this._request().put(`/similar/data/${name}`, dt, config);
     return data;
   }
 
-  protected async _predict(name: string, dt: Record<string, any>, predictProba?: boolean): Promise<any> {
+  protected async _predict(name: string, dt: string, predictProba?: boolean): Promise<any> {
     predictProba = predictProba || false;
-    const config: AxiosRequestConfig = {
-      params: {
-        predict_proba: predictProba,
-      },
-    };
-    const { data } = await this._request().post(`/predict/${name}`, dt, config);
+    
+    const { data } = await this._request().post(`/predict/${name}?predict_proba=${predictProba}`, dt);
 
     return data;
   }
 
-  protected async _ids(name: string, mode?: JAIMode): Promise<any> {
+  protected async _ids(name: string, mode: JAIModeEnum): Promise<any> {
     const config: AxiosRequestConfig = {
       params: {
-        mode: mode || 'simple',
+        mode: mode
       },
     };
 
@@ -126,7 +116,7 @@ export class BaseService {
     return data;
   }
 
-  protected async _insert_json(name: string, dt: Record<string, any>, filter_name?: string): Promise<any> {
+  protected async _insert_json(name: string, dt: string, filter_name?: string): Promise<any> {
     const config: AxiosRequestConfig = {};
 
     if (filter_name) config.params.filter_name = filter_name;
@@ -158,10 +148,10 @@ export class BaseService {
     return data;
   }
 
-  protected async _temp_ids(name: string, mode?: JAIMode): Promise<any> {
+  protected async _temp_ids(name: string, mode = JAIModeEnum.SIMPLE): Promise<any> {
     const config: AxiosRequestConfig = {
       params: {
-        mode: mode || 'simple',
+        mode: mode
       },
     };
     const { data } = await this._request().get(`/setup/ids/${name}`, config);
@@ -195,14 +185,17 @@ export class BaseService {
 
   protected async _delete_raw_data(name: string): Promise<any> {
     const { data } = await this._request().delete(`/data/${name}`);
+    return data;
+  }
+
+  protected async _delete_database(name: string): Promise<any> {
+    const { data } = await this._request().delete(`/database/${name}`);
 
     return data;
   }
 
-  protected async _delete_databases(name: string): Promise<any> {
-    const { data } = await this._request().delete(`/database/${name}`);
-
-    return data;
+  protected getUploadSpeed(): number {
+    return this.uploadSpeed;
   }
 
   private _request(): AxiosInstance {
@@ -212,7 +205,8 @@ export class BaseService {
       headers: {
         'Content-Type': 'application/json',
         Auth: access_token || '',
-      },
+      },    
+      onUploadProgress: progressEvent => console.log(progressEvent.loaded)
     };
     const instance = axios.create(axiosConfig);
     instance.interceptors.response.use(

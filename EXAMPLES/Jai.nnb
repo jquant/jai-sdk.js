@@ -1,0 +1,105 @@
+{
+    "cells": [
+        {
+            "language": "markdown",
+            "source": [
+                "Node.js Notebooks (REPL) ainda não suporta o ES modules, por isso a abordagem do require"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "const Jai = require('../src').default;"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.error",
+                            "value": {
+                                "name": "TSError",
+                                "message": "⨯ Unable to compile TypeScript:\n../src/core/Jai.ts(101,26): error TS2345: Argument of type 'Record<string, any>' is not assignable to parameter of type 'any[]'.\r\n  Type 'Record<string, any>' is missing the following properties from type 'any[]': length, pop, push, concat, and 29 more.\r\n",
+                                "stack": "    at createTSError (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:750:12)\n    at reportTSError (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:754:19)\n    at getOutput (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:941:36)\n    at Object.compile (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:1243:30)\n    at Module.m._compile (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:1370:30)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1153:10)\n    at Object.require.extensions.<computed> [as .ts] (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\resources\\scripts\\node_modules\\ts-node\\src\\index.ts:1374:12)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Function.Module._load (node:internal/modules/cjs/loader:822:12)\n    at Function._._load (c:\\Users\\supero\\.vscode\\extensions\\donjayamanne.typescript-notebook-2.0.6\\out\\extension\\server\\index.js:2:115372)"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "Nova instância do Jai"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "const jai = new Jai({\r\n    access_token: 'ad42551e7312487a90c8b3be539caec1',\r\n  });"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "Retorna o status das tarefas em execução"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "jai.info()"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "Retornar o nome dos bancos da API"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "jai.names()"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "Função de similaridade por id existentes em um Array"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "const similar = await jai.similar(\"cc_fraud_supervised\", [1000, 10001]);\r\nconsole.log(similar);\r\n"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "for (const res of similar) console.log(res);\r\n"
+            ],
+            "outputs": []
+        }
+    ]
+}

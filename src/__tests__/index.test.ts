@@ -1,4 +1,4 @@
-import Jai from '../index';
+import { Jai } from '../index';
 
 const api = new Jai({
   access_token: 'ad42551e7312487a90c8b3be539caec1',
@@ -19,9 +19,9 @@ describe('Test for getAuth', () => {
       lastName: 'Thomaz',
       company: '',
     });
-    expect(response.status).toBeLessThan(300);
-  });
-});
+    expect(response.status).toBeLessThan(300)
+  })
+})
 
 describe('Test for similar', () => {
   it('should return similarity result', async () => {
