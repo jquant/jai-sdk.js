@@ -119,7 +119,7 @@ export class Jai extends BaseService {
       const res = await this._predict(name, payload, predictProba);
 
       bar.next();
-      console.log(res);
+      result.push(...res);
     }
 
     bar.next();
@@ -155,13 +155,29 @@ export class Jai extends BaseService {
     }else{
       await this.deleteRawData(name);      
     }
+    
+    const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName);
 
-    const insertResponse = this.insertData(name, data, dbType, batchSize, filterName)
-
-    const addDataResponse = this._append(name)    
 
     return {insertResponse, addDataResponse};
   }
+
+
+  async addData(name: string, data: DataFrame, batchSize = 16384, frequencySeconds = 1, filterName = ''): Promise<any> {
+    
+    this.deleteRawData(name);
+
+    const dbType = this.getDataBaseType(name)
+
+    const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName, true)
+
+    // Implementar check ids
+
+    const addDataResponse = await this._append(name)
+
+    return {insertResponse, addDataResponse};
+  }
+
 
   async fit(): Promise<any> {
     return 'Not implemented yet';

@@ -87,7 +87,7 @@ export class BaseService {
   protected async _predict(name: string, dt: string, predictProba?: boolean): Promise<any> {
     predictProba = predictProba || false;
     
-    const { data } = await this._request().post(`/predict/${name}?predict_proba=${predictProba}`, dt);
+    const { data } = await this._request().put(`/predict/${name}?predict_proba=${predictProba}`, dt);
 
     return data;
   }
@@ -209,6 +209,12 @@ export class BaseService {
       onUploadProgress: progressEvent => console.log(progressEvent.loaded)
     };
     const instance = axios.create(axiosConfig);
+    // instance.interceptors.request.use((res) => {
+    //   console.log(res);
+    // },(error)=>{
+    //   console.log(error);
+    // });
+
     instance.interceptors.response.use(
       (response) => response,
       (error: any) => {
