@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { JAIAuth, JAIConfig } from '../estructures/interfaces';
-import { JAIModeEnum } from '../estructures/enums';
+import { JAIAuth, JAIConfig } from '../types/interfaces';
+import { JAIModeEnum } from '../types/enums';
 
 export class BaseService {
   private authCredentials: JAIConfig;

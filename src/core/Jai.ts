@@ -1,9 +1,9 @@
 import DataFrame from 'dataframe-js';
 import { chunk, sleep } from '@techmmunity/utils';
-import { JAIAuth, JAIConfig } from '../estructures/interfaces';
+import { JAIAuth, JAIConfig } from '../types/interfaces';
 import { BaseService } from './Base';
 import { progressBar } from '../functions/progressBar';
-import { JAIDatabaseTypeEnum, JAIModeEnum } from '../estructures/enums';
+import { JAIModeEnum } from '../types/enums';
 
 export class Jai extends BaseService {
   /**
@@ -11,8 +11,7 @@ export class Jai extends BaseService {
    *
    * @constructs Jai
    * @param {JAIAuth} authCredentials
-   * @param {AxiosRequestConfig} authCredentials
-   *
+   * 
    */
   constructor(authCredentials: JAIConfig) {
     super(authCredentials);
@@ -68,9 +67,9 @@ export class Jai extends BaseService {
     }
   }
 
-  async generateName(): Promise<any> {
-    return 'Not implemented yet';
-  }
+  // async generateName(): Promise<any> {
+  //   return 'Not implemented yet';
+  // }
 
   async filters(name: string): Promise<any> {
     return this._filters(name);
@@ -135,53 +134,53 @@ export class Jai extends BaseService {
     return res.value;
   }
 
-  async setup(name: string, 
-              data: DataFrame, 
-              dbType: JAIDatabaseTypeEnum, 
-              batchSize = 16384, 
-              frequencySeconds = 1, 
-              filterName = '', 
-              verbose = 1, 
-              args: Record<string, any>): Promise<any> {
+  // async setup(name: string, 
+  //             data: DataFrame, 
+  //             dbType: JAIDatabaseTypeEnum, 
+  //             batchSize = 16384, 
+  //             frequencySeconds = 1, 
+  //             filterName = '', 
+  //             verbose = 1, 
+  //             args: Record<string, any>): Promise<any> {
     
-    const overwrite = args?.overwrite || false;
-    const hasEqualName = (await this.names()).filter((x: string) => x === name).length > 0;
-    if(hasEqualName){  
-      if(overwrite){
-        await this.delete(name)
-      }else{
-        throw new Error(`Database ${name} already exist in your environment. Set overwrite=True to overwrite it.`)
-      }
-    }else{
-      await this.deleteRawData(name);      
-    }
+  //   const overwrite = args?.overwrite || false;
+  //   const hasEqualName = (await this.names()).filter((x: string) => x === name).length > 0;
+  //   if(hasEqualName){  
+  //     if(overwrite){
+  //       await this.delete(name)
+  //     }else{
+  //       throw new Error(`Database ${name} already exist in your environment. Set overwrite=True to overwrite it.`)
+  //     }
+  //   }else{
+  //     await this.deleteRawData(name);      
+  //   }
     
-    const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName);
+  //   const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName); 
 
 
-    return {insertResponse, addDataResponse};
-  }
+  //   return {insertResponse, addDataResponse};
+  // }
 
 
-  async addData(name: string, data: DataFrame, batchSize = 16384, frequencySeconds = 1, filterName = ''): Promise<any> {
+  // async addData(name: string, data: DataFrame, batchSize = 16384, frequencySeconds = 1, filterName = ''): Promise<any> {
     
-    this.deleteRawData(name);
+  //   this.deleteRawData(name);
 
-    const dbType = this.getDataBaseType(name)
+  //   const dbType = this.getDataBaseType(name)
 
-    const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName, true)
+  //   const insertResponse = await this.insertData(name, data, dbType, batchSize, filterName, true)
 
-    // Implementar check ids
+  //   // Implementar check ids
 
-    const addDataResponse = await this._append(name)
+  //   const addDataResponse = await this._append(name)
 
-    return {insertResponse, addDataResponse};
-  }
+  //   return {insertResponse, addDataResponse};
+  // }
 
 
-  async fit(): Promise<any> {
-    return 'Not implemented yet';
-  }
+  // async fit(): Promise<any> {
+  //   return 'Not implemented yet';
+  // }
 
   async delete(name: string): Promise<any> {
     return this._delete_database(name);
@@ -191,26 +190,26 @@ export class Jai extends BaseService {
     return this._delete_raw_data(name);
   }
 
-  async insertData(name: string, data: DataFrame, dbType: JAIDatabaseTypeEnum, batchSize: number, filterName = '', predict = false): Promise<any> {
-    const insertResponse = {}
-    const chunks = chunk(data.toCollection(), batchSize);
-    const total = chunks.length;
-    const bar = progressBar(total, 'Insert', this.getUploadSpeed());
+  // async insertData(name: string, data: DataFrame, dbType: JAIDatabaseTypeEnum, batchSize: number, filterName = '', predict = false): Promise<any> {
+  //   const insertResponse = {}
+  //   const chunks = chunk(data.toCollection(), batchSize);
+  //   const total = chunks.length;
+  //   const bar = progressBar(total, 'Insert', this.getUploadSpeed());
 
-    for (const chunk of chunks) {
-      const payload = JSON.stringify(chunk);
-      const res = await this._insert_json(name, payload, filterName);
-      Object.assign(insertResponse, res)
-      bar.next()
-    }
-    bar.next()
-    return insertResponse;
-  }
+  //   for (const chunk of chunks) {
+  //     const payload = JSON.stringify(chunk);
+  //     const res = await this._insert_json(name, payload, filterName);
+  //     Object.assign(insertResponse, res)
+  //     bar.next()
+  //   }
+  //   bar.next()
+  //   return insertResponse;
+  // }
 
-  async checkIdsConsistency(name: string, data: Array<Record<string, any>>): Promise<any> {
-    const insertedIds = await this._temp_ids(name);
-    if(data.length != insertedIds[0].length){
-      throw new Error('The number of ids in the dataframe and the number of ids in the database are different')
-    }
-  }
+  // async checkIdsConsistency(name: string, data: Array<Record<string, any>>): Promise<any> {
+  //   const insertedIds = await this._temp_ids(name);
+  //   if(data.length != insertedIds[0].length){
+  //     throw new Error('The number of ids in the dataframe and the number of ids in the database are different')
+  //   }
+  // }
 }
