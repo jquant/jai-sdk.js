@@ -38,3 +38,5 @@ sendTokenToEmail();
 ```
 
 If the response code is 201, then you should be receiving an email with your Auth Key.
+
+
