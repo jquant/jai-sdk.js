@@ -23,7 +23,7 @@ const api = new Jai({
   access_token: '<your token>',
 });
 
-// to send token for your e-mail
+// to send token to your e-mail
 
 async sendTokenToEmail(){
     return api.getAuthKey({
