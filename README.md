@@ -1,3 +1,7 @@
+[![axios](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)](https://www.npmjs.org/package/axios)
+[![typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://github.com/microsoft/TypeScript)
+[![dataframe-js](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)](https://gmousse.gitbooks.io/dataframe-js/content/#dataframe-js)
+
 # JAI SDK for NodeJS
 
 # Installation
@@ -39,4 +43,8 @@ sendTokenToEmail();
 
 If the response code is 201, then you should be receiving an email with your Auth Key.
 
+# Alpha SDK in Node
 
+This version of the module is currently in alpha and may contain errors.
+
+# 
