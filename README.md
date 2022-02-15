@@ -4,6 +4,12 @@
 
 # JAI SDK for NodeJS
 
+## Technologies 
+
+* [Dataframe-js](https://gmousse.gitbooks.io/dataframe-js/content/#dataframe-js)
+* [TypeScript](https://github.com/microsoft/TypeScript)
+* [Axios](https://www.npmjs.org/package/axios)
+
 # Installation
 
 The source code is currently hosted on GitHub at: [https://github.com/jquant/jai-sdk.js](https://github.com/jquant/jai-sdk.js)
