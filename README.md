@@ -329,7 +329,7 @@ const api = new Jai({
   access_token: '<your token>',
 }); 
 
-const response = await api.isValid('test', JAIModeEnum.COMPLETE);
+const response = await api.isValid('test');
 ```
 
 ### Result:
