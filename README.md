@@ -113,9 +113,9 @@ async executeSimilar(){
 
 ```json
 [
-    {'id': 0, 'distance': 0.0},
-    {'id': 1000, 'distance': 2.298321008682251},
-    {'id': 1001, 'distance': 2.545339584350586}
+    {"id": 0, "distance": 0.0},
+    {"id": 1000, "distance": 2.298321008682251},
+    {"id": 1001, "distance": 2.545339584350586}
 ]
 ```
 
@@ -174,7 +174,7 @@ const response = await api.names();
 ### Result:
 
 ```json
-['jai_database', 'jai_selfsupervised', 'jai_supervised']
+["jai_database", "jai_selfsupervised", "jai_supervised"]
 ```
 
 ## [info](#info)
@@ -237,10 +237,10 @@ const response = await api.fields('test');
 
 ```json
 {
-    'id': 0, 
-    'feature1': 0.01, 
-    'feature2': 'string', 
-    'feature3': 0
+    "id": 0, 
+    "feature1": 0.01, 
+    "feature2": "string", 
+    "feature3": 0
 }
 ```
 ## [describe](#describe)
@@ -352,7 +352,7 @@ const response = await api.delete('chosen_name');
 
 ### Result:
 ```json
-'Bombs away! We nuked database chosen_name!'
+"Bombs away! We nuked database chosen_name!"
 ```
 
 ## [deleteRawData](#drd)
@@ -371,5 +371,5 @@ const response = await api.deleteRawData('chosen_name');
 
 ### Result:
 ```json
-'All raw data from database 'chosen_name' was deleted!'
+"All raw data from database 'chosen_name' was deleted!"
 ```
