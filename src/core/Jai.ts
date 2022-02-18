@@ -104,7 +104,7 @@ export class Jai extends BaseService {
     return result;
   }
 
-  async predict(name: string, dt: DataFrame, predictProba = false, asFrame = false, batchSize = 16384): Promise<any> {
+  async predict(name: string, dt: DataFrame, predictProba = false, batchSize = 16384): Promise<any> {
     const dtype = await this.getDataBaseType(name);
     const result: Array<any> = [];
     const chunks = chunk(dt.toCollection(), batchSize);
